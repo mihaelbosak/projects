@@ -1,0 +1,65 @@
+
+```{r}
+
+#install.packages("")
+library(gmodels)
+library(class)
+
+wbcd <- read.csv("wisc_bc_data.csv", stringsAsFactors = FALSE)
+#str(wbcd)
+
+wbcd <- wbcd[-1]
+
+normalize <- function(x){
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+normalize(c(1,2,3,4,5))
+normalize(c(10,20,30,40,50))
+
+wbcd_n <- as.data.frame(lapply(wbcd[2:31], normalize))
+#str(wbcd_n)
+#summary(wbcd_n$area_mean)
+
+#k_num <- sqrt(469)
+#k_num
+k_num <- 21
+
+wbcd_train <- wbcd_n[1:469, ]
+wbcd_test <- wbcd_n[470:569, ]
+
+wbcd_train_labels <- wbcd[1:469, 1]
+wbcd_test_labels <- wbcd[470:569, 1]
+
+wbcd_test_pred <- knn(train = wbcd_train, test = wbcd_test, cl = wbcd_train_labels, k = k_num)
+
+CrossTable(x = wbcd_test_labels, y = wbcd_test_pred, prop.chisq = FALSE)
+#The top-left cell indicates the true negative results
+#The bottom-right cell indicates the true positive results
+#The two examples in the lower-left cell are false negative results; in this case, the predicted value was benign, but the tumor was actually malignant
+#The top-right cell would contain the false positive results, if there were any. These values occur when the model classifies a mass as malignant, but in reality, it was benign.
+
+wbcd_z <- as.data.frame(scale(wbcd[-1]))
+#summary(wbcd_z$area_mean)
+
+wbcd_train_z <- wbcd_z[1:469, ]
+wbcd_test_z <- wbcd_z[470:569, ]
+wbcd_train_labels <- wbcd[1:469, 1]
+wbcd_test_labels <- wbcd[470:569, 1]
+wbcd_test_pred <- knn(train = wbcd_train_z, test = wbcd_test_z, cl = wbcd_train_labels, k = k_num)
+CrossTable(x = wbcd_test_labels, y = wbcd_test_pred, prop.chisq = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```

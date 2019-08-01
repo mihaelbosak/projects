@@ -1,0 +1,45 @@
+```{r}
+install.packages("rpart.plot")
+library(rpart)
+library(rpart.plot)
+
+
+
+wine <- read.csv("winequalityN.csv",)
+str(wine)
+
+hist(wine$quality)
+
+wine_train <- wine[1:4873, ]
+wine_test <- wine[4874:6497, ]
+
+m.rpart <- rpart(quality ~ ., data = wine_train)
+m.rpart
+
+rpart.plot(m.rpart, digits = 3)
+rpart.plot(m.rpart, digits = 4, fallen.leaves = TRUE, type = 3, extra = 101)
+
+p.rpart <- predict(m.rpart, wine_test)
+summary(p.rpart)
+summary(wine_test$quality)
+cor(p.rpart, wine_test$quality)
+
+MAE <- function(actual, predicted) {
+mean(abs(actual - predicted))
+}
+
+MAE(p.rpart, wine_test$quality)
+
+mean(wine_train$quality)
+MAE(5.87, wine_test$quality)
+
+
+
+
+
+
+
+
+
+
+```

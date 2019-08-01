@@ -1,0 +1,43 @@
+```{r}
+library(rvest)
+library(robotstxt)
+library(httr)
+library(tidyverse)
+library(xml2)
+library(stringr)
+library(purrr)
+
+paths_allowed(paths = c("website url"))
+url <- ("website url")
+connection <- "x.js"
+
+
+writeLines(sprintf("var page = require('webpage').create();
+                   page.open('%s', function(){
+                   console.log(page.content);//page source
+                   phantom.exit();
+                   });", url), con = connection)
+
+system_input <- "phantomjs x.js > x.html"
+system(system_input)
+
+map_df(1:n, function(i) { #replace "n" with number of pages for scraping, example: 1:5
+
+  # simple but effective progress indicator
+  cat(".")
+
+  html <- "x.html"
+  page <- read_html(sprintf(html, i))
+
+  data.frame(part1 of website that you are trying to get=html_text(html_nodes(pg, "xpath or css of that part")),
+             partn of website that you are trying to get=html_text(html_nodes(pg, "xpath or css of that part")),
+             stringsAsFactors=FALSE)
+
+}) -> scraped_page
+
+#dplyr::arrange(sajt)
+
+#view(sajt)
+
+write.csv(scraped_page,"path to save file/dynamic_scraping.csv", row.names = FALSE)
+```
