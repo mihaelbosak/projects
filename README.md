@@ -1,2 +1,2 @@
 # projects
-various data science projects for strictly educational purposes
+various data science projects mostly based on web scraping and machine learning for strictly educational purposes.
