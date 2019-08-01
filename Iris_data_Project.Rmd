@@ -1,0 +1,53 @@
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(datasets)
+
+iris_data <- read_csv("C:/_PROGRAMIRANJE/_PROJEKTI/Iris.csv")
+#View(iris_data)
+
+iris_data$Id <- NULL
+
+dim(iris_data)
+
+summary(iris_data[, 1:4])
+
+str(iris_data)
+
+print("MINIMALNA VRIJEDNOST")
+print(sapply(iris_data, function(x) min(as.numeric(x))))
+
+print("MAKSIMALNA VRIJEDNOST")
+print(sapply(iris_data, function(x) max(as.numeric(x))))
+
+sapply(iris_data[,-5], var)
+
+ggplot(data = iris_data) +
+  aes(x = SepalLengthCm, y = SepalWidthCm, color = Species) +
+  geom_point()
+
+ggplot(data = iris_data) +
+  aes(x = PetalLengthCm, y = PetalWidthCm, color = Species) +
+  geom_point()
+
+set.seed(20)
+iris_cluster <- kmeans(iris_data[, 3:4], 3, nstart = 20)
+iris_cluster
+
+table(iris_cluster$cluster, iris_data$Species)
+
+ggplot(data = iris_data) +
+  aes(x = SepalWidthCm, y = PetalWidthCm, color = Species) +
+  geom_point()
+
+ggplot(data = iris_data) +
+  aes(x = SepalLengthCm, y = PetalLengthCm, color = Species) +
+  geom_point()
+
+iris_cluster$cluster <- as.factor(iris_cluster$cluster)
+ggplot(iris_data, aes(PetalLengthCm, PetalWidthCm, color = iris_cluster$cluster)) + geom_point()
+
+```

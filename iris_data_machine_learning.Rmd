@@ -1,0 +1,94 @@
+
+
+```{r}
+library(e1071)
+library(ellipse)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(datasets)
+library(caret)
+
+dataset <- "C:/_PROGRAMIRANJE/_PROJEKTI/iris_ml.data"
+iris_data <- read.csv(dataset, header = FALSE)
+colnames(iris_data) <- c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
+
+validation_index <- createDataPartition(iris_data$Species, p = 0.80, list = FALSE) #create a list of 80% of the rows in the original dataset we can use for training
+validation <- iris_data[-validation_index,] #select 20% of the data for validation
+iris_data <- iris_data[validation_index,] #use the remaining 80% of data to training and testing models
+
+dim(iris_data) #dimensions of dataset
+
+sapply(iris_data, class) #list types for each attribute
+head(iris_data) #first 5 rows of the data
+levels(iris_data$Species) #list the levels for the class
+
+#summarize the class distribution
+percentage <- prop.table(table(iris_data$Species)) * 100 
+cbind(freq = table(iris_data$Species), percentage = percentage)
+summary(iris_data)
+
+#split input and output
+x_input <- iris_data[, 1:4]
+y_output <- iris_data[, 5]
+
+#boxplot for each attribute on one image
+par(mfrow = c(1,4))
+  for(i in 1:4){
+    boxplot(x_input[, i], main = names(iris)[i])
+  }
+
+#barplot for class breakdown
+plot(y_output)
+
+#scatterplot matrix
+featurePlot(x = x_input, y = y_output, plot = "ellipse")
+featurePlot(x = x_input, y = y_output, plot = "box")
+
+#density plots for each attribute by class value
+scales <- list(x = list(relation = "free"), y = list(relation = "free"))
+featurePlot(x = x_input, y = y_output, plot = "density", scales = scales)
+
+#run algorithms using 10-fold cross validation
+control <- trainControl(method = "cv", number = 10)
+metric <- "Accuracy"
+
+#linear algorithms
+set.seed(7)
+fit.lda <- train(Species ~., data = iris_data, method = "lda", metric = metric, trControl = control)
+
+#non-linear algorithms
+#CART
+set.seed(7)
+fit.cart <- train(Species ~., data = iris_data, method = "rpart", metric = metric, trControl = control)
+
+#kNN
+set.seed(7)
+fit.knn <- train(Species ~., data = iris_data, method = "knn", metric = metric, trControl = control)
+
+#advanced algorithms
+#SVM
+#set.seed(7)
+#fit.svm <- train(Species ~., data = iris_data, method = "svmRadial", metric = metric, trControl = control)
+
+#random forest
+set.seed(7)
+fit.rf <- train(Species ~., data = iris_data, method = "rf", metric = metric, trControl = control)
+
+#summarize accuracy of models
+results <- resamples(list(lda = fit.lda, cart = fit.cart, knn = fit.knn, random_forest = fit.rf))
+summary(results)
+
+#compare accuracy of models
+dotplot(results)
+
+#summarize best model
+print(fit.lda)
+
+#estimate skill of LDA on the validation dataset
+predictions <- predict(fit.lda, validation)
+confusionMatrix(predictions, validation$Species)
+
+
+```
+
