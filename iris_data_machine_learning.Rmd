@@ -9,7 +9,7 @@ library(readr)
 library(datasets)
 library(caret)
 
-dataset <- "C:/_PROGRAMIRANJE/_PROJEKTI/iris_ml.data"
+dataset <- "iris_ml.data"
 iris_data <- read.csv(dataset, header = FALSE)
 colnames(iris_data) <- c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
 
