@@ -1,2 +1,2 @@
 # projects
-various data science projects
+various data science projects for strictly educational purposes
