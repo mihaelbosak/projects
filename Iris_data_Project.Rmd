@@ -6,7 +6,7 @@ library(ggplot2)
 library(readr)
 library(datasets)
 
-iris_data <- read_csv("C:/_PROGRAMIRANJE/_PROJEKTI/Iris.csv")
+iris_data <- read_csv("Iris.csv")
 #View(iris_data)
 
 iris_data$Id <- NULL
