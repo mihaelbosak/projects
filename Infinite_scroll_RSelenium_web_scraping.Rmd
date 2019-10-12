@@ -1,0 +1,32 @@
+```{r}
+library(RSelenium)
+library(rvest)
+library(stringr)
+library(xml2)
+library(robotstxt)
+paths_allowed(paths = c("website url"))
+#start RSelenium
+system('docker run -d -p 4445:4444 selenium/standalone-chrome')
+remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4445L, browserName = "chrome")
+
+remDr$open()
+#navigate to your page
+remDr$navigate("website url")
+remDr$getTitle()
+
+#scroll down n (replace n with a number) times, waiting for the page to load at each time
+for(i in 1:n){      
+remDr$executeScript(paste("scroll(0,",i*10000,");"))
+Sys.sleep(5)    
+}
+
+#get the page html
+page_source <- remDr$getPageSource()
+
+#html is deprecated
+#html(page_source[[1]]) %>% html_nodes(".item-title a") %>% html_text()
+
+#parse it
+website <- read_html(page_source[[1]]) %>% html_nodes(".item-title a") %>% html_text()
+remDr$close()
+```
