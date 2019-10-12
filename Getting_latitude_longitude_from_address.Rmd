@@ -1,0 +1,28 @@
+```{r}
+library(RSelenium)
+library(rvest)
+library(stringr)
+library(xml2)
+library(robotstxt)
+paths_allowed(paths = c("website url"))
+system("docker run -d -p 4444:4444 selenium/standalone-chrome")
+remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4445L, browserName = "chrome")
+    
+    
+remDr$open()
+#navigate to your page
+remDr$navigate("website url")
+remDr$getTitle()
+  
+#getting xpath for address box
+address_element <- remDr$findElement(using = "class", value = "class value")
+#entering values in address box
+address_element$sendKeysToElement(list("write down address that you're searching"))
+#locating FIND button
+button_element <- remDr$findElement(using = "class", value = "button")
+#clicking button
+button_element$clickElement()
+#getting final output  
+output <- remDr$findElement(using = "css", value= "css value")
+latitude_longitude <- out$getElementText()
+```
